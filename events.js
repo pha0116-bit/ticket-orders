@@ -7,6 +7,7 @@
 // soldOut: set to true to hide the event from the order form (card still shows, marked Sold Out)
 // link / linkText: optional — shows a button linking out (e.g. to an external ticket/guestlist page)
 // excludeFromForm: set to true to keep this event out of the order form dropdown (e.g. pricing/signup happens via the link instead)
+// category: optional heading to group events under (e.g. "WEEKLY EVENTS"). Events without a category are grouped under "Upcoming Events".
 
 window.EVENTS = [
   {
@@ -15,6 +16,7 @@ window.EVENTS = [
     date: "Every Saturday night",
     price: "FREE",
     description: "",
+    category: "WEEKLY EVENTS",
     soldOut: false
   },
   {
@@ -26,6 +28,7 @@ window.EVENTS = [
     link: "https://site.fourvenues.com/en/haopham",
     linkText: "Get on the guestlist",
     excludeFromForm: true,
+    category: "WEEKLY EVENTS",
     soldOut: false
   }
 ];

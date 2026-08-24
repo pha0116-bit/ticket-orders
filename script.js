@@ -23,25 +23,44 @@
       return;
     }
 
+    const groups = new Map();
     EVENTS.forEach((ev) => {
-      const card = document.createElement("div");
-      card.className = "event-card" + (ev.soldOut ? " sold-out" : "");
-      card.innerHTML = `
-        <div class="event-info">
-          <h3>${escapeHtml(ev.name)}</h3>
-          <div class="meta">${escapeHtml(ev.date)}</div>
-          ${ev.description ? `<div class="desc">${escapeHtml(ev.description)}</div>` : ""}
-          ${ev.link
-            ? `<a class="event-link-btn" href="${escapeHtml(ev.link)}" target="_blank" rel="noopener">${escapeHtml(ev.linkText || "View details")}</a>`
-            : ""}
-        </div>
-        <div>
-          ${ev.soldOut
-            ? '<span class="sold-out-tag">Sold Out</span>'
-            : `<span class="event-price">${escapeHtml(ev.price)}</span>`}
-        </div>
-      `;
-      list.appendChild(card);
+      const key = ev.category || "Upcoming Events";
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(ev);
+    });
+
+    groups.forEach((events, category) => {
+      const heading = document.createElement("h2");
+      heading.className = "section-title category-title";
+      heading.textContent = category;
+      list.appendChild(heading);
+
+      const group = document.createElement("div");
+      group.className = "event-list";
+
+      events.forEach((ev) => {
+        const card = document.createElement("div");
+        card.className = "event-card" + (ev.soldOut ? " sold-out" : "");
+        card.innerHTML = `
+          <div class="event-info">
+            <h3>${escapeHtml(ev.name)}</h3>
+            <div class="meta">${escapeHtml(ev.date)}</div>
+            ${ev.description ? `<div class="desc">${escapeHtml(ev.description)}</div>` : ""}
+            ${ev.link
+              ? `<a class="event-link-btn" href="${escapeHtml(ev.link)}" target="_blank" rel="noopener">${escapeHtml(ev.linkText || "View details")}</a>`
+              : ""}
+          </div>
+          <div>
+            ${ev.soldOut
+              ? '<span class="sold-out-tag">Sold Out</span>'
+              : `<span class="event-price">${escapeHtml(ev.price)}</span>`}
+          </div>
+        `;
+        group.appendChild(card);
+      });
+
+      list.appendChild(group);
     });
   }
 

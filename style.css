@@ -52,6 +52,13 @@ h2.section-title {
   color: var(--text);
 }
 
+h2.category-title {
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin: 0 0 10px;
+}
+
 .event-list {
   display: flex;
   flex-direction: column;
