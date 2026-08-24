@@ -10,6 +10,7 @@
 // category: optional heading to group events under (e.g. "WEEKLY EVENTS"). Events without a category are grouped under "Upcoming Events".
 // unitPrice: numeric price per ticket, used to calculate the "Estimated total" on the order form. Leave unset (or use null) if the price isn't a fixed number — it'll be marked "priced separately" instead of added to the total.
 // requireEmail: set to true to force customers to enter a valid email (not just a phone number) in the contact field when this event is selected.
+// highlight: optional short badge text shown prominently on the card (e.g. "HAO PHAM'S GUESTLIST — AT DOOR").
 
 window.EVENTS = [
   {
@@ -25,10 +26,11 @@ window.EVENTS = [
   },
   {
     id: "scarlett-nova",
-    name: "Scarlett/NOVA tickets (Hao's Guestlist)",
+    name: "Scarlett/NOVA tickets",
     date: "Scarlett: Saturday nights · NOVA: Friday nights",
     price: "See link below",
     description: "",
+    highlight: "Hao Pham's Guestlist AT DOOR",
     link: "https://site.fourvenues.com/en/haopham",
     linkText: "Get on the guestlist",
     excludeFromForm: true,
@@ -81,6 +83,8 @@ window.EVENTS = [
     date: "Sat, Nov 14, 2026",
     price: "Ask for price",
     description: "Use code HAOPHAM at checkout for $5 off.",
+    link: "https://premier.ticketek.com.au/shows/show.aspx?sh=ATEYFORF26",
+    linkText: "Buy tickets",
     category: "UPCOMING EVENTS",
     soldOut: false
   },

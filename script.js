@@ -45,6 +45,7 @@
         card.innerHTML = `
           <div class="event-info">
             <h3>${escapeHtml(ev.name)}</h3>
+            ${ev.highlight ? `<div class="event-highlight">${escapeHtml(ev.highlight)}</div>` : ""}
             <div class="meta">${escapeHtml(ev.date)}</div>
             ${ev.description ? `<div class="desc">${escapeHtml(ev.description)}</div>` : ""}
             ${ev.link
@@ -175,12 +176,10 @@
   function buildSummaryText(order) {
     const name = document.getElementById("customer-name").value.trim();
     const contact = document.getElementById("customer-contact").value.trim();
-    const ig = document.getElementById("customer-ig").value.trim();
 
     const lines = [];
     lines.push(`Ticket request from ${name || "(no name)"}`);
     lines.push(`Contact: ${contact || "(none)"}`);
-    if (ig) lines.push(`Instagram: ${ig}`);
     lines.push("");
     lines.push("Order:");
     order.forEach((item) => {
