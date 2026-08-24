@@ -32,7 +32,7 @@ window.EVENTS = [
     description: "",
     highlight: "Hao Pham's Guestlist AT DOOR",
     link: "https://site.fourvenues.com/en/haopham",
-    linkText: "Get on the guestlist",
+    linkText: "BUY TICKETS",
     excludeFromForm: true,
     category: "WEEKLY EVENTS",
     soldOut: false

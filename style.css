@@ -10,6 +10,7 @@
   --accent: #ff2ecb;
   --accent-2: #7c3aff;
   --accent-cyan: #22e5ff;
+  --accent-gold: #ffd23f;
   --border: #33243f;
   --success-bg: rgba(34, 229, 150, 0.12);
   --success-text: #5cffc0;
@@ -175,8 +176,9 @@ h2.category-title:first-child {
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #0b0713;
-  background: linear-gradient(90deg, var(--accent-cyan), var(--accent));
+  color: #2b1a00;
+  background: var(--accent-gold);
+  box-shadow: 0 0 12px rgba(255, 210, 63, 0.4);
   border-radius: 5px;
   padding: 3px 8px;
   margin: 2px 0 6px;
