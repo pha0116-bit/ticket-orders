@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ticket Requests</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <h1 id="business-name">Your Name / Business</h1>
+    <p id="tagline">Grab your tickets below — I'll confirm your order shortly!</p>
+  </header>
+
+  <h2 class="section-title">Upcoming Events</h2>
+  <div class="event-list" id="event-list"></div>
+
+  <h2 class="section-title">Request Tickets</h2>
+
+  <div class="status-msg" id="status-msg"></div>
+
+  <form id="order-form">
+    <div class="field">
+      <label for="customer-name">Your name</label>
+      <input type="text" id="customer-name" name="name" required autocomplete="name" />
+    </div>
+
+    <div class="field">
+      <label for="customer-contact">Best way to reach you (email or phone)</label>
+      <input type="text" id="customer-contact" name="contact" required autocomplete="email" placeholder="you@example.com or (555) 555-5555" />
+    </div>
+
+    <div class="field">
+      <label for="customer-ig">Instagram handle (optional)</label>
+      <input type="text" id="customer-ig" name="instagram" placeholder="@yourhandle" />
+    </div>
+
+    <div id="order-rows"></div>
+
+    <button type="button" class="add-row-btn" id="add-row-btn">+ Add another event</button>
+
+    <input type="hidden" name="order_summary" id="order-summary-field" />
+
+    <button type="submit" class="submit-btn" id="submit-btn">Send Request</button>
+
+    <div class="divider">or</div>
+
+    <button type="button" class="ig-btn" id="ig-btn">Message me on Instagram instead</button>
+    <p class="hint">This copies your order details, then opens Instagram — just paste it into the chat.</p>
+  </form>
+
+  <footer>
+    Ticket requests are confirmed manually. You'll hear back before any payment is due.
+  </footer>
+
+</div>
+
+<script src="config.js"></script>
+<script src="events.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

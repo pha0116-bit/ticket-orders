@@ -1,0 +1,269 @@
+:root {
+  --bg: #faf9f7;
+  --surface: #ffffff;
+  --text: #1f2328;
+  --text-muted: #6b7280;
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --border: #e5e7eb;
+  --success-bg: #ecfdf5;
+  --success-text: #065f46;
+  --danger-text: #b91c1c;
+  --radius: 12px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.wrap {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+
+header.hero {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+header.hero h1 {
+  font-size: 1.6rem;
+  margin: 0 0 6px;
+}
+
+header.hero p {
+  color: var(--text-muted);
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+h2.section-title {
+  font-size: 1.05rem;
+  margin: 0 0 12px;
+  color: var(--text);
+}
+
+.event-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.event-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.event-card.sold-out {
+  opacity: 0.6;
+}
+
+.event-info h3 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+}
+
+.event-info .meta {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.event-info .desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.event-price {
+  font-weight: 600;
+  white-space: nowrap;
+  font-size: 1rem;
+}
+
+.sold-out-tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--danger-text);
+  text-transform: uppercase;
+}
+
+form {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+}
+
+.field {
+  margin-bottom: 14px;
+}
+
+.field label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #fff;
+  color: var(--text);
+}
+
+.field input:focus,
+.field select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.order-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  margin-bottom: 10px;
+}
+
+.order-row .field {
+  margin-bottom: 0;
+}
+
+.order-row .field.event-field {
+  flex: 3;
+}
+
+.order-row .field.qty-field {
+  flex: 1;
+}
+
+.remove-row-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 8px;
+  line-height: 1;
+}
+
+.remove-row-btn:hover {
+  color: var(--danger-text);
+}
+
+.add-row-btn {
+  background: none;
+  border: 1px dashed var(--border);
+  color: var(--accent);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.add-row-btn:hover {
+  border-color: var(--accent);
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background: var(--accent-hover);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.divider {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 16px 0;
+  position: relative;
+}
+
+.ig-btn {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ig-btn:hover {
+  border-color: var(--accent);
+}
+
+.hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+  text-align: center;
+}
+
+.status-msg {
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+  display: none;
+}
+
+.status-msg.show {
+  display: block;
+}
+
+.status-msg.success {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.status-msg.error {
+  background: #fef2f2;
+  color: var(--danger-text);
+}
+
+footer {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  margin-top: 28px;
+}
