@@ -86,6 +86,35 @@ h2.category-title:first-child {
   margin-top: 0;
 }
 
+.event-search-field {
+  margin-bottom: 20px;
+}
+
+.event-search-field input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  font-size: 0.95rem;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.event-search-field input::placeholder {
+  color: #6c5d82;
+}
+
+.event-search-field input:focus {
+  outline: none;
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 0 3px rgba(34, 229, 255, 0.2);
+}
+
+.event-search-empty {
+  display: none;
+  padding: 8px 0 4px;
+}
+
 .event-list {
   display: flex;
   flex-direction: column;

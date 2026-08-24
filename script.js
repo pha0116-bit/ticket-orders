@@ -13,18 +13,32 @@
   document.getElementById("add-row-btn").addEventListener("click", () => addOrderRow());
   document.getElementById("order-form").addEventListener("submit", handleSubmit);
   document.getElementById("ig-btn").addEventListener("click", handleInstagramFallback);
+  document.getElementById("event-search").addEventListener("input", (e) => renderEventList(e.target.value));
 
-  function renderEventList() {
+  function renderEventList(searchText) {
     const list = document.getElementById("event-list");
+    const emptyMsg = document.getElementById("event-search-empty");
     list.innerHTML = "";
 
     if (EVENTS.length === 0) {
       list.innerHTML = '<p class="hint">No events posted right now — check back soon.</p>';
+      emptyMsg.style.display = "none";
       return;
     }
 
+    const query = (searchText || "").trim().toLowerCase();
+    const visibleEvents = query
+      ? EVENTS.filter((ev) => ev.name.toLowerCase().includes(query))
+      : EVENTS;
+
+    if (visibleEvents.length === 0) {
+      emptyMsg.style.display = "block";
+      return;
+    }
+    emptyMsg.style.display = "none";
+
     const groups = new Map();
-    EVENTS.forEach((ev) => {
+    visibleEvents.forEach((ev) => {
       const key = ev.category || "Upcoming Events";
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(ev);
