@@ -34,5 +34,83 @@ window.EVENTS = [
     excludeFromForm: true,
     category: "WEEKLY EVENTS",
     soldOut: false
+  },
+  {
+    id: "marlo-altitude",
+    name: "MaRLo Presents ALTITUDE: The Decade",
+    date: "Sat, Sep 5, 2026 · 4:00 PM",
+    price: "$170",
+    unitPrice: 170,
+    description: "Flemington Racecourse, Melbourne.",
+    category: "UPCOMING EVENTS",
+    soldOut: false
+  },
+  {
+    id: "sandbox-2026",
+    name: "Sandbox Music Festival",
+    date: "Fri, Sep 25, 2026 · 3:00 PM",
+    price: "$135",
+    unitPrice: 135,
+    description: "PICA, Port Melbourne.",
+    category: "UPCOMING EVENTS",
+    soldOut: false
+  },
+  {
+    id: "echoes-of-us-ga",
+    name: "Echoes Of Us (GA)",
+    date: "Sat, Nov 7, 2026",
+    price: "$155",
+    unitPrice: 155,
+    description: "Melbourne. General admission.",
+    category: "UPCOMING EVENTS",
+    soldOut: false
+  },
+  {
+    id: "echoes-of-us-vip",
+    name: "Echoes Of Us (VIP)",
+    date: "Sat, Nov 7, 2026",
+    price: "$250",
+    unitPrice: 250,
+    description: "Melbourne. VIP.",
+    category: "UPCOMING EVENTS",
+    soldOut: false
+  },
+  {
+    id: "84fest-2026",
+    name: "84FEST",
+    date: "Sat, Nov 14, 2026",
+    price: "Ask for price",
+    description: "Use code HAOPHAM at checkout for $5 off.",
+    category: "UPCOMING EVENTS",
+    soldOut: false
+  },
+  {
+    id: "hypersonic-2026",
+    name: "Hypersonic Festival",
+    date: "Sat, Nov 30 – Dec 1, 2026",
+    price: "$175",
+    unitPrice: 175,
+    description: "Flemington Racecourse, Melbourne.",
+    category: "UPCOMING EVENTS",
+    soldOut: false
+  },
+  {
+    id: "kandy-carnival-2026",
+    name: "Kandy Carnival",
+    date: "Fri, Dec 11, 2026",
+    price: "On request",
+    description: "Festival Hall, Melbourne. Message me for pricing.",
+    category: "UPCOMING EVENTS",
+    soldOut: false
+  },
+  {
+    id: "dreamstate-2027",
+    name: "Dreamstate Australia",
+    date: "Sun, Feb 7, 2027 · 2:00 PM",
+    price: "$180",
+    unitPrice: 180,
+    description: "Melbourne.",
+    category: "UPCOMING EVENTS",
+    soldOut: false
   }
 ];
