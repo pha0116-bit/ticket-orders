@@ -9,6 +9,7 @@
 // excludeFromForm: set to true to keep this event out of the order form dropdown (e.g. pricing/signup happens via the link instead)
 // category: optional heading to group events under (e.g. "WEEKLY EVENTS"). Events without a category are grouped under "Upcoming Events".
 // unitPrice: numeric price per ticket, used to calculate the "Estimated total" on the order form. Leave unset (or use null) if the price isn't a fixed number — it'll be marked "priced separately" instead of added to the total.
+// requireEmail: set to true to force customers to enter a valid email (not just a phone number) in the contact field when this event is selected.
 
 window.EVENTS = [
   {
@@ -19,6 +20,7 @@ window.EVENTS = [
     unitPrice: 0,
     description: "Submit your email in the form below to reserve your free spot.",
     category: "WEEKLY EVENTS",
+    requireEmail: true,
     soldOut: false
   },
   {

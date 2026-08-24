@@ -196,6 +196,22 @@
     el.className = "status-msg show " + type;
   }
 
+  function isValidEmail(str) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(str);
+  }
+
+  function checkEmailRequirement(order) {
+    const requiresEmail = order.some((item) => item.event.requireEmail);
+    if (!requiresEmail) return true;
+
+    const contact = document.getElementById("customer-contact").value.trim();
+    if (!isValidEmail(contact)) {
+      showStatus("Please enter a valid email address above to reserve your free Scarlett Frees spot.", "error");
+      return false;
+    }
+    return true;
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -204,6 +220,8 @@
       showStatus("Please select at least one event and quantity.", "error");
       return;
     }
+
+    if (!checkEmailRequirement(order)) return;
 
     const summary = buildSummaryText(order);
     document.getElementById("order-summary-field").value = summary;
@@ -248,6 +266,8 @@
       showStatus("Please select at least one event and quantity first.", "error");
       return;
     }
+
+    if (!checkEmailRequirement(order)) return;
 
     const summary = buildSummaryText(order);
     const handle = CONFIG.instagramHandle || "";
