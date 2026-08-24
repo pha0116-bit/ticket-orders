@@ -357,7 +357,7 @@ form {
   align-items: center;
   padding: 14px 4px;
   margin-bottom: 6px;
-  border-top: 1px dashed var(--border);
+  border-top: 1px solid var(--border);
   font-weight: 700;
   font-size: 1.1rem;
   color: var(--text);
