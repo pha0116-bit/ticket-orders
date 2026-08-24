@@ -27,7 +27,7 @@ window.EVENTS = [
   {
     id: "scarlett-nova",
     name: "Scarlett/NOVA tickets",
-    date: "Scarlett: Saturday nights · NOVA: Friday nights",
+    date: "Scarlett: Saturday nights\nNOVA: Friday nights",
     price: "See link below",
     description: "",
     highlight: "Hao Pham's Guestlist AT DOOR",
