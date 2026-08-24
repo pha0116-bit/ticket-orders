@@ -56,20 +56,25 @@
       events.forEach((ev) => {
         const card = document.createElement("div");
         card.className = "event-card" + (ev.soldOut ? " sold-out" : "");
+
+        const priceIsLink = !ev.soldOut && ev.link && typeof ev.unitPrice !== "number";
+
         card.innerHTML = `
           <div class="event-info">
             <h3>${escapeHtml(ev.name)}</h3>
             ${ev.highlight ? `<div class="event-highlight">${escapeHtml(ev.highlight)}</div>` : ""}
             <div class="meta">${escapeHtml(ev.date)}</div>
             ${ev.description ? `<div class="desc">${escapeHtml(ev.description)}</div>` : ""}
-            ${ev.link
+            ${ev.link && !priceIsLink
               ? `<a class="event-link-btn" href="${escapeHtml(ev.link)}" target="_blank" rel="noopener">${escapeHtml(ev.linkText || "View details")}</a>`
               : ""}
           </div>
           <div>
             ${ev.soldOut
               ? '<span class="sold-out-tag">Sold Out</span>'
-              : `<span class="event-price">${escapeHtml(ev.price)}</span>`}
+              : priceIsLink
+                ? `<a class="event-price-link" href="${escapeHtml(ev.link)}" target="_blank" rel="noopener">${escapeHtml(ev.linkText || "Buy Tickets")}</a>`
+                : `<span class="event-price">${escapeHtml(ev.price)}</span>`}
           </div>
         `;
         group.appendChild(card);
