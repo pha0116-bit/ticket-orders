@@ -5,7 +5,7 @@
   document.getElementById("business-name").textContent = CONFIG.businessName || "Your Name / Business";
   document.getElementById("tagline").textContent = CONFIG.tagline || "";
 
-  const availableEvents = EVENTS.filter((e) => !e.soldOut);
+  const availableEvents = EVENTS.filter((e) => !e.soldOut && !e.excludeFromForm);
 
   renderEventList();
   addOrderRow();
@@ -31,6 +31,9 @@
           <h3>${escapeHtml(ev.name)}</h3>
           <div class="meta">${escapeHtml(ev.date)}</div>
           ${ev.description ? `<div class="desc">${escapeHtml(ev.description)}</div>` : ""}
+          ${ev.link
+            ? `<a class="event-link-btn" href="${escapeHtml(ev.link)}" target="_blank" rel="noopener">${escapeHtml(ev.linkText || "View details")}</a>`
+            : ""}
         </div>
         <div>
           ${ev.soldOut

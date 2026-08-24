@@ -96,6 +96,23 @@ h2.section-title {
   font-size: 1rem;
 }
 
+.event-link-btn {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  padding: 5px 10px;
+}
+
+.event-link-btn:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
 .sold-out-tag {
   font-size: 0.75rem;
   font-weight: 600;
