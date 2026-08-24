@@ -29,6 +29,7 @@
     <div class="field">
       <label for="customer-contact">Best way to reach you (email or phone)</label>
       <input type="text" id="customer-contact" name="contact" required autocomplete="email" placeholder="you@example.com or (555) 555-5555" />
+      <p class="field-hint">Don't worry — no spam, this is only used to confirm your order.</p>
     </div>
 
     <div class="field">
@@ -39,6 +40,12 @@
     <div id="order-rows"></div>
 
     <button type="button" class="add-row-btn" id="add-row-btn">+ Add another event</button>
+
+    <div class="order-total" id="order-total">
+      <span>Estimated total</span>
+      <span id="order-total-amount">$0</span>
+    </div>
+    <p class="hint order-total-note" id="order-total-note">Some items are priced separately — I'll confirm the final total with you.</p>
 
     <input type="hidden" name="order_summary" id="order-summary-field" />
 

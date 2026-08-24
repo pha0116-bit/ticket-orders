@@ -8,6 +8,7 @@
 // link / linkText: optional — shows a button linking out (e.g. to an external ticket/guestlist page)
 // excludeFromForm: set to true to keep this event out of the order form dropdown (e.g. pricing/signup happens via the link instead)
 // category: optional heading to group events under (e.g. "WEEKLY EVENTS"). Events without a category are grouped under "Upcoming Events".
+// unitPrice: numeric price per ticket, used to calculate the "Estimated total" on the order form. Leave unset (or use null) if the price isn't a fixed number — it'll be marked "priced separately" instead of added to the total.
 
 window.EVENTS = [
   {
@@ -15,7 +16,8 @@ window.EVENTS = [
     name: "Scarlett Frees (subject to availability)",
     date: "Every Saturday night",
     price: "FREE",
-    description: "",
+    unitPrice: 0,
+    description: "Submit your email in the form below to reserve your free spot.",
     category: "WEEKLY EVENTS",
     soldOut: false
   },

@@ -81,7 +81,11 @@
     row.innerHTML = `
       <div class="field event-field">
         <label>Event</label>
-        <select name="event_id" required>${options}</select>
+        <select name="event_id" required>
+          ${options}
+          <option value="__other__">Other (not listed)</option>
+        </select>
+        <input type="text" name="custom_event_name" class="other-input" placeholder="Which event?" style="display:none" />
       </div>
       <div class="field qty-field">
         <label>Qty</label>
@@ -90,14 +94,32 @@
       <button type="button" class="remove-row-btn" aria-label="Remove event">✕</button>
     `;
 
+    const select = row.querySelector('select[name="event_id"]');
+    const otherInput = row.querySelector('input[name="custom_event_name"]');
+    const qtyInput = row.querySelector('input[name="quantity"]');
+
+    function toggleOtherInput() {
+      const isOther = select.value === "__other__";
+      otherInput.style.display = isOther ? "block" : "none";
+      otherInput.required = isOther;
+    }
+
+    select.addEventListener("change", () => {
+      toggleOtherInput();
+      updateOrderTotal();
+    });
+    qtyInput.addEventListener("input", updateOrderTotal);
+
     row.querySelector(".remove-row-btn").addEventListener("click", () => {
       const allRows = rows.querySelectorAll(".order-row");
       if (allRows.length > 1) {
         row.remove();
+        updateOrderTotal();
       }
     });
 
     rows.appendChild(row);
+    updateOrderTotal();
   }
 
   function collectOrder() {
@@ -105,9 +127,49 @@
     return rows.map((row) => {
       const eventId = row.querySelector('select[name="event_id"]').value;
       const qty = parseInt(row.querySelector('input[name="quantity"]').value, 10) || 0;
+
+      if (eventId === "__other__") {
+        const customName = row.querySelector('input[name="custom_event_name"]').value.trim();
+        return {
+          event: {
+            id: "other",
+            name: customName ? `Other: ${customName}` : "Other (unspecified event)",
+            price: "TBD",
+            unitPrice: null
+          },
+          quantity: qty
+        };
+      }
+
       const ev = EVENTS.find((e) => e.id === eventId);
       return { event: ev, quantity: qty };
     }).filter((item) => item.event && item.quantity > 0);
+  }
+
+  function updateOrderTotal() {
+    const amountEl = document.getElementById("order-total-amount");
+    const noteEl = document.getElementById("order-total-note");
+    if (!amountEl || !noteEl) return;
+
+    const order = collectOrder();
+    let total = 0;
+    let hasUnknown = false;
+
+    order.forEach((item) => {
+      if (typeof item.event.unitPrice === "number") {
+        total += item.event.unitPrice * item.quantity;
+      } else {
+        hasUnknown = true;
+      }
+    });
+
+    amountEl.textContent = formatCurrency(total);
+    noteEl.style.display = hasUnknown ? "block" : "none";
+  }
+
+  function formatCurrency(amount) {
+    const fixed = amount.toFixed(2).replace(/\.00$/, "");
+    return `$${fixed}`;
   }
 
   function buildSummaryText(order) {

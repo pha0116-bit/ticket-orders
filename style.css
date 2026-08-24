@@ -162,6 +162,32 @@ form {
   outline-offset: 1px;
 }
 
+.field-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 6px 0 0;
+}
+
+.other-input {
+  margin-top: 8px;
+}
+
+.order-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 4px;
+  margin-bottom: 6px;
+  border-top: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.order-total-note {
+  display: none;
+  margin: 0 0 14px;
+}
+
 .order-row {
   display: flex;
   gap: 8px;
