@@ -101,9 +101,8 @@ window.EVENTS = [
   {
     id: "hypersonic-2026",
     name: "Hypersonic Festival",
-    date: "Sat, Nov 30 – Dec 1, 2026",
-    startDate: "2026-11-30",
-    endDate: "2026-12-01",
+    date: "Fri, Nov 20, 2026",
+    startDate: "2026-11-20",
     price: "$175",
     unitPrice: 175,
     description: "Flemington Racecourse, Melbourne.",
