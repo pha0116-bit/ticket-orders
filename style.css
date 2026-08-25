@@ -400,6 +400,16 @@ form {
   margin-top: 8px;
 }
 
+/* Off-screen rather than display:none — some bots skip hidden fields. */
+.gotcha-field {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .order-total {
   display: flex;
   justify-content: space-between;
