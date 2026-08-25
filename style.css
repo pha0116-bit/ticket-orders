@@ -68,10 +68,14 @@ header.hero p {
 
 h2.section-title {
   font-family: 'Bebas Neue', 'Inter', sans-serif;
-  font-size: 1.5rem;
-  letter-spacing: 0.04em;
+  font-size: 1.9rem;
+  letter-spacing: 0.05em;
   margin: 0 0 14px;
-  color: var(--text);
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent) 55%, var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 22px rgba(255, 46, 203, 0.3);
 }
 
 h2.category-title {
