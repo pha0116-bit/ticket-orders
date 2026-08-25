@@ -210,6 +210,31 @@ h2.category-title:first-child {
   opacity: 0.55;
 }
 
+.event-card--clickable {
+  cursor: pointer;
+}
+
+.event-card--flash {
+  animation: card-flash 1s ease;
+}
+
+@keyframes card-flash {
+  0%, 100% {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.02), 0 8px 24px rgba(124, 58, 255, 0.08);
+    border-color: var(--border);
+  }
+  25% {
+    box-shadow: 0 0 0 2px var(--accent), 0 0 24px rgba(255, 46, 203, 0.5);
+    border-color: var(--accent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .event-card--flash {
+    animation: none;
+  }
+}
+
 .event-info h3 {
   margin: 0 0 4px;
   font-size: 1.05rem;
@@ -568,6 +593,10 @@ footer {
   margin-top: 28px;
 }
 
+#request-tickets-heading {
+  word-spacing: -0.08em;
+}
+
 @media (min-width: 720px) {
   .wrap {
     max-width: 720px;
@@ -583,6 +612,13 @@ footer {
     max-width: 520px;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  h2.section-title {
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
   }
 
   .event-list {

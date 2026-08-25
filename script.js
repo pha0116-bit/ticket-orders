@@ -55,7 +55,8 @@
 
       events.forEach((ev) => {
         const card = document.createElement("div");
-        card.className = "event-card" + (ev.soldOut ? " sold-out" : "");
+        const isClickable = !ev.soldOut && !ev.link;
+        card.className = "event-card" + (ev.soldOut ? " sold-out" : "") + (isClickable ? " event-card--clickable" : "");
 
         const priceIsLink = !ev.soldOut && ev.link && typeof ev.unitPrice !== "number";
 
@@ -77,11 +78,27 @@
                 : `<span class="event-price">${escapeHtml(ev.price)}</span>`}
           </div>
         `;
+
+        if (isClickable) {
+          card.addEventListener("click", () => scrollToRequestForm(card));
+        }
+
         group.appendChild(card);
       });
 
       list.appendChild(group);
     });
+  }
+
+  function scrollToRequestForm(card) {
+    const heading = document.getElementById("request-tickets-heading");
+    if (heading) heading.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    card.classList.remove("event-card--flash");
+    // Force reflow so the animation restarts if the card is clicked again quickly.
+    void card.offsetWidth;
+    card.classList.add("event-card--flash");
+    card.addEventListener("animationend", () => card.classList.remove("event-card--flash"), { once: true });
   }
 
   function addOrderRow() {
