@@ -214,6 +214,12 @@ h2.category-title:first-child {
   cursor: pointer;
 }
 
+.event-card--clickable:focus-visible {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: 3px;
+  border-color: var(--accent-2);
+}
+
 /* Flash the Event field so it's obvious which row the clicked card landed in. */
 .field--flash select,
 .field--flash input {
@@ -589,11 +595,56 @@ form {
   border-color: rgba(255, 92, 122, 0.3);
 }
 
+.trust-strip {
+  list-style: none;
+  margin: 0;
+  padding: 14px 16px;
+  background: rgba(124, 58, 255, 0.07);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 12px;
+}
+
+.trust-strip li {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+}
+
+.trust-strip svg {
+  color: var(--accent-cyan);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.trust-strip strong {
+  display: block;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.trust-strip span {
+  display: block;
+  font-size: 0.79rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
 footer {
   text-align: center;
   color: var(--text-muted);
   font-size: 0.78rem;
   margin-top: 28px;
+}
+
+footer p {
+  margin: 0 0 6px;
+}
+
+.footer-fine {
+  opacity: 0.75;
 }
 
 #request-tickets-heading {
@@ -615,6 +666,7 @@ footer {
   }
 
   .event-search-field,
+  .trust-strip,
   form {
     max-width: 520px;
     margin-left: auto;
