@@ -103,7 +103,7 @@ window.EVENTS = [
     name: "Kandy Carnival",
     date: "Fri, Dec 11, 2026",
     price: "On request",
-    description: "Festival Hall, Melbourne. Message me for pricing.",
+    description: "PICA, Port Melbourne. Message me for pricing.",
     category: "UPCOMING EVENTS",
     soldOut: false
   },

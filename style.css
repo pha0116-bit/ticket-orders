@@ -214,23 +214,26 @@ h2.category-title:first-child {
   cursor: pointer;
 }
 
-.event-card--flash {
-  animation: card-flash 1s ease;
+/* Flash the Event field so it's obvious which row the clicked card landed in. */
+.field--flash select,
+.field--flash input {
+  animation: field-flash 1.2s ease;
 }
 
-@keyframes card-flash {
+@keyframes field-flash {
   0%, 100% {
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.02), 0 8px 24px rgba(124, 58, 255, 0.08);
     border-color: var(--border);
+    box-shadow: none;
   }
-  25% {
-    box-shadow: 0 0 0 2px var(--accent), 0 0 24px rgba(255, 46, 203, 0.5);
+  20%, 60% {
     border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(255, 46, 203, 0.3), 0 0 20px rgba(255, 46, 203, 0.35);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .event-card--flash {
+  .field--flash select,
+  .field--flash input {
     animation: none;
   }
 }
@@ -565,7 +568,7 @@ form {
   border-radius: 8px;
   padding: 12px 14px;
   font-size: 0.9rem;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   display: none;
   border: 1px solid transparent;
 }
@@ -595,6 +598,10 @@ footer {
 
 #request-tickets-heading {
   word-spacing: -0.08em;
+  margin-top: 40px;
+  /* Keeps the heading clear of the viewport edge when an event card
+     scrolls the page down to it. */
+  scroll-margin-top: 20px;
 }
 
 @media (min-width: 720px) {

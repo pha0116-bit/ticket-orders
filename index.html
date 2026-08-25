@@ -9,7 +9,18 @@
 <meta property="og:type" content="website" />
 <meta property="og:title" content="Hao's of Raves Tickets" />
 <meta property="og:description" content="Reserve tickets for Melbourne rave and festival events — request below and I'll confirm your order personally." />
-<meta name="twitter:card" content="summary" />
+<meta property="og:url" content="https://pha0116-bit.github.io/ticket-orders/" />
+<!-- Absolute URL: Facebook and Instagram won't resolve a relative og:image. -->
+<meta property="og:image" content="https://pha0116-bit.github.io/ticket-orders/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Hao's of Raves Tickets — Melbourne rave and festival tickets" />
+<meta property="og:site_name" content="Hao's of Raves Tickets" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Hao's of Raves Tickets" />
+<meta name="twitter:description" content="Reserve tickets for Melbourne rave and festival events — request below and I'll confirm your order personally." />
+<meta name="twitter:image" content="https://pha0116-bit.github.io/ticket-orders/og-image.png" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b0713'/%3E%3Ctext x='50' y='72' font-size='62' text-anchor='middle' fill='%23ff2ecb' font-family='Arial Black,Arial,sans-serif' font-weight='900'%3EH%3C/text%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -36,8 +47,6 @@
 
   <h2 class="section-title" id="request-tickets-heading">Request Tickets</h2>
 
-  <div class="status-msg" id="status-msg"></div>
-
   <form id="order-form">
     <div class="field">
       <label for="customer-name">Your name</label>
@@ -61,6 +70,8 @@
     <p class="hint order-total-note" id="order-total-note">Some items are priced separately — I'll confirm the final total with you.</p>
 
     <input type="hidden" name="order_summary" id="order-summary-field" />
+
+    <div class="status-msg" id="status-msg" role="status" aria-live="polite"></div>
 
     <button type="submit" class="submit-btn" id="submit-btn">Send Request</button>
 

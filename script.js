@@ -55,7 +55,9 @@
 
       events.forEach((ev) => {
         const card = document.createElement("div");
-        const isClickable = !ev.soldOut && !ev.link;
+        // Only cards you can actually order through the form are clickable —
+        // sold out, external-link, and form-excluded events have nowhere to go.
+        const isClickable = !ev.soldOut && !ev.link && !ev.excludeFromForm;
         card.className = "event-card" + (ev.soldOut ? " sold-out" : "") + (isClickable ? " event-card--clickable" : "");
 
         const priceIsLink = !ev.soldOut && ev.link && typeof ev.unitPrice !== "number";
@@ -80,7 +82,7 @@
         `;
 
         if (isClickable) {
-          card.addEventListener("click", () => scrollToRequestForm(card));
+          card.addEventListener("click", () => requestEvent(ev.id));
         }
 
         group.appendChild(card);
@@ -90,19 +92,42 @@
     });
   }
 
-  function scrollToRequestForm(card) {
+  // Clicking an event card should leave the customer with that event already
+  // chosen in the form — otherwise they have to hunt for it again in the dropdown.
+  function requestEvent(eventId) {
+    const rows = Array.from(document.querySelectorAll(".order-row"));
+
+    // Already in the order? Just point at it rather than adding a duplicate row.
+    let targetRow = rows.find((row) => row.querySelector('select[name="event_id"]').value === eventId);
+
+    if (!targetRow) {
+      // Reuse a row the customer hasn't chosen anything in yet, else start a new one.
+      targetRow = rows.find((row) => row.dataset.userSet !== "true");
+      if (!targetRow) targetRow = addOrderRow();
+      if (!targetRow) return;
+
+      const select = targetRow.querySelector('select[name="event_id"]');
+      select.value = eventId;
+      select.dispatchEvent(new Event("change"));
+    }
+
     const heading = document.getElementById("request-tickets-heading");
     if (heading) heading.scrollIntoView({ behavior: "smooth", block: "start" });
 
-    card.classList.remove("event-card--flash");
-    // Force reflow so the animation restarts if the card is clicked again quickly.
-    void card.offsetWidth;
-    card.classList.add("event-card--flash");
-    card.addEventListener("animationend", () => card.classList.remove("event-card--flash"), { once: true });
+    flashField(targetRow.querySelector(".event-field"));
+  }
+
+  function flashField(field) {
+    if (!field) return;
+    field.classList.remove("field--flash");
+    // Force reflow so the animation restarts if another card is clicked quickly.
+    void field.offsetWidth;
+    field.classList.add("field--flash");
+    field.addEventListener("animationend", () => field.classList.remove("field--flash"), { once: true });
   }
 
   function addOrderRow() {
-    if (availableEvents.length === 0) return;
+    if (availableEvents.length === 0) return null;
 
     const rows = document.getElementById("order-rows");
     const rowId = "row-" + Date.now() + "-" + Math.random().toString(36).slice(2, 7);
@@ -142,6 +167,7 @@
     }
 
     select.addEventListener("change", () => {
+      row.dataset.userSet = "true";
       toggleOtherInput();
       updateOrderTotal();
     });
@@ -157,6 +183,7 @@
 
     rows.appendChild(row);
     updateOrderTotal();
+    return row;
   }
 
   function collectOrder() {
@@ -229,6 +256,13 @@
     const el = document.getElementById("status-msg");
     el.textContent = message;
     el.className = "status-msg show " + type;
+
+    // The message sits at the bottom of a long form — make sure it's actually
+    // on screen, otherwise a failed submit looks like nothing happened.
+    const rect = el.getBoundingClientRect();
+    if (rect.top < 0 || rect.bottom > window.innerHeight) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   }
 
   function isValidEmail(str) {
