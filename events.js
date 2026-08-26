@@ -2,6 +2,11 @@
 // id: short unique code (no spaces) — used internally, not shown to customers
 // name: event title shown on the page
 // date: shown as text, format it however you like (e.g. "Sat, Sep 20, 2026 · 7:00 PM")
+// startDate: machine-readable date "YYYY-MM-DD". Used to sort events and to hide them
+//            automatically once they've passed. Leave it off for recurring events
+//            (e.g. a weekly night) — those never expire and always sort first.
+// endDate: optional "YYYY-MM-DD" for multi-day events. The event stays listed until
+//          the end of this day. Defaults to startDate.
 // price: shown as text, include currency symbol (e.g. "$25")
 // description: optional short line under the event name
 // soldOut: set to true to hide the event from the order form (card still shows, marked Sold Out)
@@ -41,6 +46,7 @@ window.EVENTS = [
     id: "marlo-altitude",
     name: "MaRLo Presents ALTITUDE: The Decade",
     date: "Sat, Sep 5, 2026 · 4:00 PM",
+    startDate: "2026-09-05",
     price: "$170",
     unitPrice: 170,
     description: "Flemington Racecourse, Melbourne.",
@@ -51,6 +57,7 @@ window.EVENTS = [
     id: "sandbox-2026",
     name: "Sandbox Music Festival",
     date: "Fri, Sep 25, 2026 · 3:00 PM",
+    startDate: "2026-09-25",
     price: "$135",
     unitPrice: 135,
     description: "PICA, Port Melbourne.",
@@ -61,6 +68,7 @@ window.EVENTS = [
     id: "echoes-of-us-ga",
     name: "Echoes Of Us (GA)",
     date: "Sat, Nov 7, 2026",
+    startDate: "2026-11-07",
     price: "$155",
     unitPrice: 155,
     description: "Melbourne. General admission.",
@@ -71,6 +79,7 @@ window.EVENTS = [
     id: "echoes-of-us-vip",
     name: "Echoes Of Us (VIP)",
     date: "Sat, Nov 7, 2026",
+    startDate: "2026-11-07",
     price: "$250",
     unitPrice: 250,
     description: "Melbourne. VIP.",
@@ -81,6 +90,7 @@ window.EVENTS = [
     id: "84fest-2026",
     name: "84FEST",
     date: "Sat, Nov 14, 2026",
+    startDate: "2026-11-14",
     price: "Ask for price",
     description: "Use code HAOPHAM at checkout for $5 off.",
     link: "https://premier.ticketek.com.au/shows/show.aspx?sh=ATEYFORF26",
@@ -91,7 +101,8 @@ window.EVENTS = [
   {
     id: "hypersonic-2026",
     name: "Hypersonic Festival",
-    date: "Sat, Nov 30 – Dec 1, 2026",
+    date: "Fri, Nov 20, 2026",
+    startDate: "2026-11-20",
     price: "$175",
     unitPrice: 175,
     description: "Flemington Racecourse, Melbourne.",
@@ -102,8 +113,9 @@ window.EVENTS = [
     id: "kandy-carnival-2026",
     name: "Kandy Carnival",
     date: "Fri, Dec 11, 2026",
+    startDate: "2026-12-11",
     price: "On request",
-    description: "Festival Hall, Melbourne. Message me for pricing.",
+    description: "PICA, Port Melbourne. Message me for pricing.",
     category: "UPCOMING EVENTS",
     soldOut: false
   },
@@ -111,6 +123,7 @@ window.EVENTS = [
     id: "dreamstate-2027",
     name: "Dreamstate Australia",
     date: "Sun, Feb 7, 2027 · 2:00 PM",
+    startDate: "2027-02-07",
     price: "$180",
     unitPrice: 180,
     description: "Melbourne.",

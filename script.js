@@ -5,7 +5,63 @@
   document.getElementById("business-name").textContent = CONFIG.businessName || "Your Name / Business";
   document.getElementById("tagline").textContent = CONFIG.tagline || "";
 
-  const availableEvents = EVENTS.filter((e) => !e.soldOut && !e.excludeFromForm);
+  setUpAnalytics();
+
+  // Loads nothing unless a GoatCounter code is set in config.js.
+  function setUpAnalytics() {
+    const code = (CONFIG.goatCounterCode || "").trim();
+    if (!code) return;
+
+    window.goatcounter = { no_onload: false };
+    const s = document.createElement("script");
+    s.async = true;
+    s.dataset.goatcounter = `https://${encodeURIComponent(code)}.goatcounter.com/count`;
+    s.src = "https://gc.zgo.at/count.js";
+    document.head.appendChild(s);
+  }
+
+  function trackEvent(name) {
+    if (window.goatcounter && typeof window.goatcounter.count === "function") {
+      window.goatcounter.count({ path: name, title: name, event: true });
+    }
+  }
+
+  const liveEvents = sortByDate(EVENTS.filter(isStillUpcoming));
+  const availableEvents = liveEvents.filter((e) => !e.soldOut && !e.excludeFromForm);
+
+  // An event stays listed until the end of its final day, so a festival doesn't
+  // vanish from the page while it's still running. Recurring events (no
+  // startDate) never expire.
+  function isStillUpcoming(ev) {
+    const last = ev.endDate || ev.startDate;
+    if (!last) return true;
+
+    const parts = String(last).split("-").map(Number);
+    if (parts.length !== 3 || parts.some(isNaN)) return true;
+
+    const endOfDay = new Date(parts[0], parts[1] - 1, parts[2], 23, 59, 59);
+    return endOfDay >= new Date();
+  }
+
+  function sortByDate(events) {
+    // Recurring events (no startDate) sort first, then everything by date.
+    return events.slice().sort((a, b) => {
+      if (!a.startDate && !b.startDate) return 0;
+      if (!a.startDate) return -1;
+      if (!b.startDate) return 1;
+      return a.startDate.localeCompare(b.startDate);
+    });
+  }
+
+  // Customers search by venue and month as often as by event name, so match
+  // against everything visible on the card.
+  function matchesSearch(ev, query) {
+    return [ev.name, ev.date, ev.description, ev.category, ev.price, ev.highlight]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase()
+      .includes(query);
+  }
 
   renderEventList();
   addOrderRow();
@@ -20,7 +76,7 @@
     const emptyMsg = document.getElementById("event-search-empty");
     list.innerHTML = "";
 
-    if (EVENTS.length === 0) {
+    if (liveEvents.length === 0) {
       list.innerHTML = '<p class="hint">No events posted right now — check back soon.</p>';
       emptyMsg.style.display = "none";
       return;
@@ -28,8 +84,8 @@
 
     const query = (searchText || "").trim().toLowerCase();
     const visibleEvents = query
-      ? EVENTS.filter((ev) => ev.name.toLowerCase().includes(query))
-      : EVENTS;
+      ? liveEvents.filter((ev) => matchesSearch(ev, query))
+      : liveEvents;
 
     if (visibleEvents.length === 0) {
       emptyMsg.style.display = "block";
@@ -55,7 +111,10 @@
 
       events.forEach((ev) => {
         const card = document.createElement("div");
-        card.className = "event-card" + (ev.soldOut ? " sold-out" : "");
+        // Only cards you can actually order through the form are clickable —
+        // sold out, external-link, and form-excluded events have nowhere to go.
+        const isClickable = !ev.soldOut && !ev.link && !ev.excludeFromForm;
+        card.className = "event-card" + (ev.soldOut ? " sold-out" : "") + (isClickable ? " event-card--clickable" : "");
 
         const priceIsLink = !ev.soldOut && ev.link && typeof ev.unitPrice !== "number";
 
@@ -77,6 +136,22 @@
                 : `<span class="event-price">${escapeHtml(ev.price)}</span>`}
           </div>
         `;
+
+        if (isClickable) {
+          // Expose the card as a real button so keyboard and screen reader
+          // users get the same shortcut mouse users do.
+          card.setAttribute("role", "button");
+          card.setAttribute("tabindex", "0");
+          card.setAttribute("aria-label", `Request tickets for ${ev.name}`);
+          card.addEventListener("click", () => requestEvent(ev.id));
+          card.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+              e.preventDefault();
+              requestEvent(ev.id);
+            }
+          });
+        }
+
         group.appendChild(card);
       });
 
@@ -84,8 +159,42 @@
     });
   }
 
+  // Clicking an event card should leave the customer with that event already
+  // chosen in the form — otherwise they have to hunt for it again in the dropdown.
+  function requestEvent(eventId) {
+    const rows = Array.from(document.querySelectorAll(".order-row"));
+
+    // Already in the order? Just point at it rather than adding a duplicate row.
+    let targetRow = rows.find((row) => row.querySelector('select[name="event_id"]').value === eventId);
+
+    if (!targetRow) {
+      // Reuse a row the customer hasn't chosen anything in yet, else start a new one.
+      targetRow = rows.find((row) => row.dataset.userSet !== "true");
+      if (!targetRow) targetRow = addOrderRow();
+      if (!targetRow) return;
+
+      const select = targetRow.querySelector('select[name="event_id"]');
+      select.value = eventId;
+      select.dispatchEvent(new Event("change"));
+    }
+
+    const heading = document.getElementById("request-tickets-heading");
+    if (heading) heading.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    flashField(targetRow.querySelector(".event-field"));
+  }
+
+  function flashField(field) {
+    if (!field) return;
+    field.classList.remove("field--flash");
+    // Force reflow so the animation restarts if another card is clicked quickly.
+    void field.offsetWidth;
+    field.classList.add("field--flash");
+    field.addEventListener("animationend", () => field.classList.remove("field--flash"), { once: true });
+  }
+
   function addOrderRow() {
-    if (availableEvents.length === 0) return;
+    if (availableEvents.length === 0) return null;
 
     const rows = document.getElementById("order-rows");
     const rowId = "row-" + Date.now() + "-" + Math.random().toString(36).slice(2, 7);
@@ -100,16 +209,16 @@
 
     row.innerHTML = `
       <div class="field event-field">
-        <label>Event</label>
-        <select name="event_id" required>
+        <label for="event-${rowId}">Event</label>
+        <select name="event_id" id="event-${rowId}" required>
           ${options}
           <option value="__other__">Other (not listed)</option>
         </select>
-        <input type="text" name="custom_event_name" class="other-input" placeholder="Which event?" style="display:none" />
+        <input type="text" name="custom_event_name" class="other-input" placeholder="Which event?" aria-label="Name of the event you want" style="display:none" />
       </div>
       <div class="field qty-field">
-        <label>Qty</label>
-        <input type="number" name="quantity" min="1" max="20" value="1" required />
+        <label for="qty-${rowId}">Qty</label>
+        <input type="number" name="quantity" id="qty-${rowId}" min="1" max="20" value="1" required />
       </div>
       <button type="button" class="remove-row-btn" aria-label="Remove event">✕</button>
     `;
@@ -124,8 +233,15 @@
       otherInput.required = isOther;
     }
 
+    // Start on an event that isn't already in the order, so the row doesn't
+    // open on a duplicate the customer then has to change.
+    select.value = firstAvailableEventId();
+    toggleOtherInput();
+
     select.addEventListener("change", () => {
+      row.dataset.userSet = "true";
       toggleOtherInput();
+      refreshDuplicateOptions();
       updateOrderTotal();
     });
     qtyInput.addEventListener("input", updateOrderTotal);
@@ -134,12 +250,41 @@
       const allRows = rows.querySelectorAll(".order-row");
       if (allRows.length > 1) {
         row.remove();
+        refreshDuplicateOptions();
         updateOrderTotal();
       }
     });
 
     rows.appendChild(row);
+    refreshDuplicateOptions();
     updateOrderTotal();
+    return row;
+  }
+
+  // Grey out events already chosen in another row, so the same ticket can't be
+  // ordered as two separate lines. "Other" stays selectable everywhere.
+  function refreshDuplicateOptions() {
+    const selects = Array.from(document.querySelectorAll('.order-row select[name="event_id"]'));
+    const taken = new Set(selects.map((s) => s.value).filter((v) => v !== "__other__"));
+
+    selects.forEach((select) => {
+      Array.from(select.options).forEach((option) => {
+        option.disabled =
+          option.value !== "__other__" &&
+          option.value !== select.value &&
+          taken.has(option.value);
+      });
+    });
+  }
+
+  // A new row defaults to the first option, which may already be taken —
+  // start it on something still available instead.
+  function firstAvailableEventId() {
+    const taken = new Set(
+      Array.from(document.querySelectorAll('.order-row select[name="event_id"]')).map((s) => s.value)
+    );
+    const free = availableEvents.find((ev) => !taken.has(ev.id));
+    return free ? free.id : "__other__";
   }
 
   function collectOrder() {
@@ -163,7 +308,22 @@
 
       const ev = EVENTS.find((e) => e.id === eventId);
       return { event: ev, quantity: qty };
-    }).filter((item) => item.event && item.quantity > 0);
+    }).filter((item) => item.event && item.quantity > 0)
+      .reduce(mergeDuplicates, []);
+  }
+
+  // Disabled options stop people picking the same event twice, but merge on the
+  // way out too so the order that reaches the inbox is never double-listed.
+  function mergeDuplicates(merged, item) {
+    const key = item.event.id === "other" ? "other:" + item.event.name : item.event.id;
+    const existing = merged.find((m) => m.key === key);
+
+    if (existing) {
+      existing.quantity += item.quantity;
+    } else {
+      merged.push({ key: key, event: item.event, quantity: item.quantity });
+    }
+    return merged;
   }
 
   function updateOrderTotal() {
@@ -212,6 +372,13 @@
     const el = document.getElementById("status-msg");
     el.textContent = message;
     el.className = "status-msg show " + type;
+
+    // The message sits at the bottom of a long form — make sure it's actually
+    // on screen, otherwise a failed submit looks like nothing happened.
+    const rect = el.getBoundingClientRect();
+    if (rect.top < 0 || rect.bottom > window.innerHeight) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   }
 
   function isValidEmail(str) {
@@ -264,6 +431,7 @@
 
       if (res.ok) {
         showStatus("Thanks! Your request has been sent — I'll confirm your order and payment soon.", "success");
+        trackEvent("ticket-request-sent");
         document.getElementById("order-form").reset();
         document.getElementById("order-rows").innerHTML = "";
         addOrderRow();
@@ -278,7 +446,7 @@
     }
   }
 
-  async function handleInstagramFallback() {
+  function handleInstagramFallback() {
     const order = collectOrder();
     if (order.length === 0) {
       showStatus("Please select at least one event and quantity first.", "error");
@@ -289,16 +457,26 @@
 
     const summary = buildSummaryText(order);
     const handle = CONFIG.instagramHandle || "";
-
-    try {
-      await navigator.clipboard.writeText(summary);
-      showStatus("Order details copied! Paste them into the Instagram chat that just opened.", "success");
-    } catch (err) {
-      showStatus("Couldn't copy automatically — please copy your order details manually before messaging.", "error");
-    }
-
     const url = handle ? `https://ig.me/m/${encodeURIComponent(handle)}` : "https://instagram.com";
-    window.open(url, "_blank", "noopener");
+
+    // Open Instagram synchronously, while the click still counts as user
+    // activation. Opening it after awaiting the clipboard gets popup-blocked.
+    const opened = window.open(url, "_blank", "noopener");
+
+    const copy = navigator.clipboard && navigator.clipboard.writeText
+      ? navigator.clipboard.writeText(summary)
+      : Promise.reject();
+
+    copy.then(() => {
+      showStatus(
+        opened
+          ? "Order details copied! Paste them into the Instagram chat that just opened."
+          : "Order details copied! Open Instagram and paste them into a DM to " + (handle ? "@" + handle : "me") + ".",
+        "success"
+      );
+    }).catch(() => {
+      showStatus("Couldn't copy automatically — please note your order down, then send it to " + (handle ? "@" + handle : "me") + " on Instagram.", "error");
+    });
   }
 
   function escapeHtml(str) {
