@@ -237,10 +237,37 @@ h2.category-title:first-child {
   }
 }
 
+/* And glow the whole row behind it — on a phone the row wraps onto two lines
+   and a thin border flash on its own is easy to scroll past. */
+.order-row--flash {
+  animation: row-flash 1.6s ease;
+  border-radius: 12px;
+}
+
+@keyframes row-flash {
+  0%, 100% {
+    background: transparent;
+    box-shadow: none;
+  }
+  20%, 60% {
+    background: rgba(255, 46, 203, 0.1);
+    box-shadow: 0 0 0 8px rgba(255, 46, 203, 0.1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .field--flash select,
   .field--flash input {
     animation: none;
+    /* No animation, but still show *something* — otherwise these users get no
+       feedback at all about which row was filled in. */
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(255, 46, 203, 0.3);
+  }
+
+  .order-row--flash {
+    animation: none;
+    background: rgba(255, 46, 203, 0.1);
   }
 }
 

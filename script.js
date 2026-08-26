@@ -178,19 +178,95 @@
       select.dispatchEvent(new Event("change"));
     }
 
-    const heading = document.getElementById("request-tickets-heading");
-    if (heading) heading.scrollIntoView({ behavior: "smooth", block: "start" });
-
-    flashField(targetRow.querySelector(".event-field"));
+    revealRow(targetRow);
   }
 
-  function flashField(field) {
-    if (!field) return;
-    field.classList.remove("field--flash");
-    // Force reflow so the animation restarts if another card is clicked quickly.
-    void field.offsetWidth;
-    field.classList.add("field--flash");
-    field.addEventListener("animationend", () => field.classList.remove("field--flash"), { once: true });
+  // Scroll the customer to the row we just filled in, then flash it. Aiming at
+  // the section heading alone isn't enough on phones: the heading, trust strip
+  // and name/contact fields push the order row below the fold, so the
+  // highlight happens off screen and the tap looks like it did nothing.
+  function revealRow(row) {
+    if (!row) return;
+
+    const heading = document.getElementById("request-tickets-heading");
+    const viewport = window.innerHeight || document.documentElement.clientHeight;
+    let scrollTarget = row;
+    let block = "center";
+
+    if (heading) {
+      const top = heading.getBoundingClientRect().top;
+      const bottom = row.getBoundingClientRect().bottom;
+      // Keep the "Request Tickets" context when heading and row both fit on
+      // screen together (desktop, short orders); otherwise the row wins.
+      if (bottom - top < viewport - 40) {
+        scrollTarget = heading;
+        block = "start";
+      }
+    }
+
+    const before = window.scrollY;
+    scrollTarget.scrollIntoView({ behavior: "smooth", block });
+
+    // Already in the right place? Nothing will scroll, so don't sit and wait.
+    if (Math.abs(window.scrollY - before) < 1 && isFullyVisible(row)) {
+      flashRow(row);
+      return;
+    }
+
+    afterScroll(() => flashRow(row));
+  }
+
+  function isFullyVisible(el) {
+    const rect = el.getBoundingClientRect();
+    const viewport = window.innerHeight || document.documentElement.clientHeight;
+    return rect.top >= 0 && rect.bottom <= viewport;
+  }
+
+  // Run cb once the smooth scroll settles — firing it immediately means the
+  // flash burns out mid-scroll. `scrollend` is missing on older mobile
+  // browsers, so race it against a timer.
+  function afterScroll(cb) {
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      window.removeEventListener("scrollend", finish);
+      clearTimeout(timer);
+      cb();
+    };
+
+    const timer = setTimeout(finish, 700);
+    if ("onscrollend" in window) window.addEventListener("scrollend", finish);
+  }
+
+  let flashTimer;
+
+  // Highlight the whole row, not just the select — on a phone the row wraps
+  // onto two lines and a thin border glow is easy to miss.
+  function flashRow(row) {
+    if (!row) return;
+    const field = row.querySelector(".event-field");
+
+    row.classList.remove("order-row--flash");
+    if (field) field.classList.remove("field--flash");
+    // Force reflow so the animation restarts if another card is tapped quickly.
+    void row.offsetWidth;
+
+    row.classList.add("order-row--flash");
+    row.addEventListener("animationend", () => row.classList.remove("order-row--flash"), { once: true });
+
+    if (field) {
+      field.classList.add("field--flash");
+      field.addEventListener("animationend", () => field.classList.remove("field--flash"), { once: true });
+    }
+
+    // Reduced-motion users get a static highlight, so `animationend` never
+    // fires for them — clear it on a timer or it would stick permanently.
+    clearTimeout(flashTimer);
+    flashTimer = setTimeout(() => {
+      row.classList.remove("order-row--flash");
+      if (field) field.classList.remove("field--flash");
+    }, 1800);
   }
 
   function addOrderRow() {
