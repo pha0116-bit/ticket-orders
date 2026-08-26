@@ -585,6 +585,10 @@ footer {
     margin-right: auto;
   }
 
+  h2.section-title:not(.category-title) {
+    text-align: center;
+  }
+
   .event-list {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
