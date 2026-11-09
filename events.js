@@ -111,6 +111,26 @@ window.EVENTS = [
     soldOut: false
   },
   {
+    id: "nowadays-nye-2026",
+    name: "Nowadays NYE",
+    date: "Thu, Dec 31, 2026",
+    startDate: "2026-12-31",
+    price: "$100 GA. DM for VIP",
+    description: "Riviera Beach Club, Elwood.",
+    category: "UPCOMING EVENTS",
+    soldOut: false
+  },
+  {
+    id: "htid-klassics-2027",
+    name: "HTID Klassics",
+    date: "Mon, Jan 25, 2027",
+    startDate: "2027-01-25",
+    price: "On request",
+    description: "Melbourne. Message me for pricing.",
+    category: "UPCOMING EVENTS",
+    soldOut: false
+  },
+  {
     id: "dreamstate-2027",
     name: "Dreamstate Australia",
     date: "Sun, Feb 7, 2027 · 2:00 PM",
