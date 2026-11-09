@@ -129,5 +129,16 @@ window.EVENTS = [
     description: "Melbourne.",
     category: "UPCOMING EVENTS",
     soldOut: false
+  },
+  {
+    id: "ultra-australia-2027",
+    name: "Ultra Australia",
+    date: "Sat, Apr 17, 2027",
+    startDate: "2027-04-17",
+    price: "$180",
+    unitPrice: 180,
+    description: "Flemington Racecourse, Melbourne.",
+    category: "UPCOMING EVENTS",
+    soldOut: false
   }
 ];
