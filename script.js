@@ -291,6 +291,10 @@
           <option value="__other__">Other (not listed)</option>
         </select>
         <input type="text" name="custom_event_name" class="other-input" placeholder="Which event?" aria-label="Name of the event you want" style="display:none" />
+        <div class="date-request" style="display:none">
+          <label for="date-${rowId}"></label>
+          <input type="date" name="requested_date" id="date-${rowId}" />
+        </div>
       </div>
       <div class="field qty-field">
         <label for="qty-${rowId}">Qty</label>
@@ -302,6 +306,12 @@
     const select = row.querySelector('select[name="event_id"]');
     const otherInput = row.querySelector('input[name="custom_event_name"]');
     const qtyInput = row.querySelector('input[name="quantity"]');
+    const dateWrap = row.querySelector(".date-request");
+    const dateLabel = dateWrap.querySelector("label");
+    const dateInput = dateWrap.querySelector('input[name="requested_date"]');
+
+    // Can't reserve a spot for a night that's already gone.
+    dateInput.min = todayIsoDate();
 
     function toggleOtherInput() {
       const isOther = select.value === "__other__";
@@ -309,14 +319,32 @@
       otherInput.required = isOther;
     }
 
+    // Recurring events like the weekly Scarlett frees need to know which night
+    // the customer actually wants, so ask only for the events flagged for it.
+    function toggleDateInput() {
+      const ev = availableEvents.find((e) => e.id === select.value);
+      const needsDate = !!(ev && ev.requireDate);
+
+      dateWrap.style.display = needsDate ? "block" : "none";
+      // A hidden required field blocks submission with no visible explanation.
+      dateInput.required = needsDate;
+      if (needsDate) {
+        dateLabel.textContent = ev.dateFieldLabel || "Which date?";
+      } else {
+        dateInput.value = "";
+      }
+    }
+
     // Start on an event that isn't already in the order, so the row doesn't
     // open on a duplicate the customer then has to change.
     select.value = firstAvailableEventId();
     toggleOtherInput();
+    toggleDateInput();
 
     select.addEventListener("change", () => {
       row.dataset.userSet = "true";
       toggleOtherInput();
+      toggleDateInput();
       refreshDuplicateOptions();
       updateOrderTotal();
     });
@@ -348,9 +376,23 @@
         option.disabled =
           option.value !== "__other__" &&
           option.value !== select.value &&
+          !allowsMultipleRows(option.value) &&
           taken.has(option.value);
       });
     });
+  }
+
+  function todayIsoDate() {
+    const d = new Date();
+    const pad = (n) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  }
+
+  // A recurring event can legitimately be requested for two different nights,
+  // so it isn't blocked from appearing in more than one row.
+  function allowsMultipleRows(eventId) {
+    const ev = availableEvents.find((e) => e.id === eventId);
+    return !!(ev && ev.requireDate);
   }
 
   // A new row defaults to the first option, which may already be taken —
@@ -383,21 +425,30 @@
       }
 
       const ev = EVENTS.find((e) => e.id === eventId);
-      return { event: ev, quantity: qty };
+      const dateField = row.querySelector('input[name="requested_date"]');
+      return {
+        event: ev,
+        quantity: qty,
+        requestedDate: ev && ev.requireDate && dateField ? dateField.value : ""
+      };
     }).filter((item) => item.event && item.quantity > 0)
       .reduce(mergeDuplicates, []);
   }
 
   // Disabled options stop people picking the same event twice, but merge on the
   // way out too so the order that reaches the inbox is never double-listed.
+  // Two requests for the same recurring event on different nights are distinct,
+  // so the chosen date is part of what makes a line unique.
   function mergeDuplicates(merged, item) {
-    const key = item.event.id === "other" ? "other:" + item.event.name : item.event.id;
+    const key = item.event.id === "other"
+      ? "other:" + item.event.name
+      : item.event.id + (item.requestedDate ? ":" + item.requestedDate : "");
     const existing = merged.find((m) => m.key === key);
 
     if (existing) {
       existing.quantity += item.quantity;
     } else {
-      merged.push({ key: key, event: item.event, quantity: item.quantity });
+      merged.push({ key: key, event: item.event, quantity: item.quantity, requestedDate: item.requestedDate });
     }
     return merged;
   }
@@ -438,10 +489,26 @@
     lines.push("");
     lines.push("Order:");
     order.forEach((item) => {
-      lines.push(`- ${item.event.name} x${item.quantity} (${item.event.price} each)`);
+      const when = item.requestedDate ? ` — for ${formatRequestedDate(item.requestedDate)}` : "";
+      lines.push(`- ${item.event.name} x${item.quantity} (${item.event.price} each)${when}`);
     });
 
     return lines.join("\n");
+  }
+
+  // Build the date from its parts; `new Date("2027-01-02")` is parsed as UTC
+  // and can read back as the previous day in Melbourne.
+  function formatRequestedDate(iso) {
+    const parts = String(iso).split("-").map(Number);
+    if (parts.length !== 3 || parts.some(isNaN)) return iso;
+
+    const d = new Date(parts[0], parts[1] - 1, parts[2]);
+    return d.toLocaleDateString("en-AU", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric"
+    });
   }
 
   function showStatus(message, type) {
@@ -473,6 +540,16 @@
     return true;
   }
 
+  // The Instagram button isn't a submit, so it never runs native validation —
+  // both paths check this explicitly.
+  function checkDateRequirement(order) {
+    const missing = order.find((item) => item.event.requireDate && !item.requestedDate);
+    if (!missing) return true;
+
+    showStatus(`Please pick a date for ${missing.event.name}.`, "error");
+    return false;
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -483,6 +560,7 @@
     }
 
     if (!checkEmailRequirement(order)) return;
+    if (!checkDateRequirement(order)) return;
 
     const summary = buildSummaryText(order);
     document.getElementById("order-summary-field").value = summary;
@@ -530,6 +608,7 @@
     }
 
     if (!checkEmailRequirement(order)) return;
+    if (!checkDateRequirement(order)) return;
 
     const summary = buildSummaryText(order);
     const handle = CONFIG.instagramHandle || "";

@@ -427,6 +427,43 @@ form {
   margin-top: 8px;
 }
 
+.date-request {
+  margin-top: 10px;
+}
+
+.date-request label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: var(--accent-cyan);
+}
+
+.date-request input {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--accent-2);
+  border-radius: 8px;
+  /* 16px minimum: anything smaller makes iOS Safari zoom the page on focus. */
+  font-size: 16px;
+  background: #0f0a17;
+  color: var(--text);
+  font-family: inherit;
+}
+
+.date-request input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(255, 46, 203, 0.22);
+}
+
+/* The native picker icon renders near-black on the dark field otherwise. */
+.date-request input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.7;
+  cursor: pointer;
+}
+
 /* Off-screen rather than display:none — some bots skip hidden fields. */
 .gotcha-field {
   position: absolute;

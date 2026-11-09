@@ -27,12 +27,14 @@ window.EVENTS = [
     description: "Submit your email in the form below to reserve your free spot.",
     category: "WEEKLY EVENTS",
     requireEmail: true,
+    requireDate: true,
+    dateFieldLabel: "Which Saturday?",
     soldOut: false
   },
   {
-    id: "scarlett-nova",
-    name: "Scarlett/NOVA tickets",
-    date: "Scarlett: Saturday nights\nNOVA: Friday nights",
+    id: "scarlett-tickets",
+    name: "Scarlett tickets",
+    date: "Saturday nights",
     price: "See link below",
     description: "",
     highlight: "Hao Pham's Guestlist AT DOOR",
@@ -95,17 +97,6 @@ window.EVENTS = [
     description: "Use code HAOPHAM at checkout for $5 off.",
     link: "https://premier.ticketek.com.au/shows/show.aspx?sh=ATEYFORF26",
     linkText: "Buy tickets",
-    category: "UPCOMING EVENTS",
-    soldOut: false
-  },
-  {
-    id: "hypersonic-2026",
-    name: "Hypersonic Festival",
-    date: "Fri, Nov 20, 2026",
-    startDate: "2026-11-20",
-    price: "$175",
-    unitPrice: 175,
-    description: "Flemington Racecourse, Melbourne.",
     category: "UPCOMING EVENTS",
     soldOut: false
   },
